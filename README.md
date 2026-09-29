@@ -1,4 +1,4 @@
-# VLCspeaker
+# VLCspeaker-Subtitle to Speech
 
 A simple Windows video player built for watching **foreign-language movies by listening**.
 
