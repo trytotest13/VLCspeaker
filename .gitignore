@@ -1,0 +1,14 @@
+__pycache__/
+# PyInstaller build artifacts
+build/
+dist/
+# Piper neural voice models are user downloads (up to ~100 MB each)
+piper/voices/*.onnx
+piper/voices/*.onnx.json
+piper/voices/*.part
+
+# generated installer file list
+wix/main-installer.wxs
+wix/main-rust.wxs
+# WiX linker database (build artifact)
+*.wixpdb

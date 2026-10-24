@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*" Name="VLC Speaker" UpgradeCode="8F9A2B3C-4D5E-6F7A-8B9C-0D1E2F3A4B5C"
+             Manufacturer="VLC Speaker" Language="1033" Codepage="1252" Version="1.0.0">
+
+        <Package Id="*" Keywords="Installer" Description="VLC Speaker Setup"
+                 InstallerVersion="450" Compressed="yes" InstallScope="perMachine" Platform="x64"/>
+
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed."/>
+        <MediaTemplate EmbedCab="yes"/>
+
+        <!-- Check if VLC is installed -->
+        <Property Id="VLC_INSTALLED">
+            <RegistrySearch Id="VlcReg64" Root="HKLM" Key="SOFTWARE\VideoLAN\VLC" Name="InstallDir" Type="raw" Win64="yes" />
+            <RegistrySearch Id="VlcReg32" Root="HKLM" Key="SOFTWARE\WOW6432Node\VideoLAN\VLC" Name="InstallDir" Type="raw" Win64="no" />
+        </Property>
+        <Condition Message="VLC Media Player is not installed! Please install VLC from https://www.videolan.org/ before installing VLC Speaker.">
+            <![CDATA[Installed OR VLC_INSTALLED]]>
+        </Condition>
+
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFiles64Folder">
+                <Directory Id="APPLICATIONFOLDER" Name="VLCSpeaker">
+                    <!-- Main Executable -->
+                    <Component Id="MainExecutable" Guid="11111111-2222-3333-4444-555555555555" Win64="yes">
+                        <File Id="VlcspeakerExe" Name="vlcspeaker.exe" Source="target\release\vlcspeaker.exe" KeyPath="yes"/>
+                    </Component>
+                    
+                    <!-- Icon Asset -->
+                    <Directory Id="ASSETSDIR" Name="assets">
+                        <Component Id="IconComponent" Guid="22222222-3333-4444-5555-666666666666" Win64="yes">
+                            <File Id="IconFile" Name="icon.ico" Source="assets\icon.ico" KeyPath="yes"/>
+                        </Component>
+                    </Directory>
+
+                    <!-- Piper Subdirectories & Files -->
+                    <Directory Id="PIPERDIR" Name="piper">
+                        <Component Id="PiperExeComp" Guid="33333333-4444-5555-6666-777777777777" Win64="yes">
+                            <File Id="PiperExeFile" Name="piper.exe" Source="piper\piper.exe" KeyPath="yes"/>
+                        </Component>
+                        <Directory Id="VOICESDIR" Name="voices">
+                            <Component Id="VoiceModelComp" Guid="44444444-4444-5555-6666-777777777777" Win64="yes">
+                                <File Id="VoiceModelFile" Name="en_US-lessac-medium.onnx" Source="piper\voices\en_US-lessac-medium.onnx" KeyPath="yes"/>
+                            </Component>
+                        </Directory>
+                    </Directory>
+                </Directory>
+            </Directory>
+
+            <!-- Desktop Shortcut -->
+            <Directory Id="DesktopFolder" Name="Desktop">
+                <Component Id="DesktopShortcutComp" Guid="55555555-6666-7777-8888-999999999999" Win64="yes">
+                    <Shortcut Id="DesktopShortcut" Name="VLC Speaker" Description="Launch VLC Speaker"
+                              Target="[APPLICATIONFOLDER]vlcspeaker.exe" WorkingDirectory="APPLICATIONFOLDER" Icon="ProductICO"/>
+                    <RemoveFolder Id="RemoveDesktopShortcut" Directory="DesktopFolder" On="uninstall"/>
+                    <RegistryValue Root="HKCU" Key="Software\VLCSpeaker" Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes"/>
+                </Component>
+            </Directory>
+
+            <!-- Start Menu Shortcut & Uninstaller -->
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="VLC Speaker">
+                    <Component Id="StartMenuShortcutComp" Guid="66666666-7777-8888-9999-000000000000" Win64="yes">
+                        <Shortcut Id="StartMenuShortcut" Name="VLC Speaker" Target="[APPLICATIONFOLDER]vlcspeaker.exe"
+                                  WorkingDirectory="APPLICATIONFOLDER" Icon="ProductICO"/>
+                        <Shortcut Id="UninstallProduct" Name="Uninstall VLC Speaker" Target="[System64Folder]msiexec.exe"
+                                  Arguments="/x [ProductCode]"/>
+                        <RemoveFolder Id="RemoveStartMenu" Directory="ApplicationProgramsFolder" On="uninstall"/>
+                        <RegistryValue Root="HKCU" Key="Software\VLCSpeaker" Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes"/>
+                    </Component>
+                </Directory>
+            </Directory>
+        </Directory>
+
+        <Icon Id="ProductICO" SourceFile="assets\icon.ico"/>
+        <Property Id="ARPPRODUCTICON" Value="ProductICO" />
+        <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONFOLDER" />
+        <UIRef Id="WixUI_InstallDir" />
+        <UIRef Id="WixUI_ErrorProgressText" />
+
+        <Feature Id="Complete" Level="1">
+            <ComponentRef Id="MainExecutable"/>
+            <ComponentRef Id="IconComponent"/>
+            <ComponentRef Id="PiperExeComp"/>
+            <ComponentRef Id="VoiceModelComp"/>
+            <ComponentRef Id="DesktopShortcutComp"/>
+            <ComponentRef Id="StartMenuShortcutComp"/>
+        </Feature>
+    </Product>
+</Wix>

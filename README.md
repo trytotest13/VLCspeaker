@@ -1,3 +1,40 @@
+# VLCspeaker 2.0 (standalone Windows app)
+
+**VLCspeaker ships as a standalone .exe** (built with PyInstaller): one app
+folder, no Python, no pip installs. The installer carries everything: the
+app, the Piper neural voice engine, and an English voice model (fully
+offline after install).
+
+## Install (real installer)
+
+Double-click **`dist/VLCSpeaker-Setup-0.0.1.msi`**. It installs to
+`C:\Program Files\VLCSpeaker\`, adds Start Menu + Desktop shortcuts, and
+registers an uninstaller (Windows Settings → Apps). When installed it already
+has everything it needs and connects to the local voice model automatically;
+only VLC itself must be on the PC (the app's ⚙ Setup screen can install it via
+winget with one click if missing).
+
+## Build the installer from source
+
+```
+build_installer.cmd            # runs all steps below in order
+```
+
+1. `py -3 -m PyInstaller VLCspeaker-installer.spec --noconfirm --clean`
+   → `dist\vlcspeaker\vlcspeaker.exe` (+ `_internal\`, Piper TTS bundled)
+2. copy `piper\voices` into `dist\vlcspeaker\piper\voices` (the offline voice)
+3. `py -3 wix\gen_installer.py` (regenerate the installer file list)
+4. `wix build -arch x64 -ext WixToolset.UI.wixext -o dist\VLCSpeaker-Setup-0.0.1.msi wix\main-installer.wxs`
+
+Check a machine is ready: `vlcspeaker.exe --selftest`.
+
+Open a video from the command line: `vlcspeaker.exe movie.mkv` (or drop a
+file onto the window). Subtitles auto-load from `movie.srt` / `movie.vtt`.
+
+Everything below documents the original 1.x Python edition.
+
+---
+
 # VLCspeaker
 
 A simple Windows video player built for watching **foreign-language movies by listening**.
@@ -162,6 +199,33 @@ Notes:
 
 ---
 
+## Live translation (offline AI model)
+
+Subtitles no longer have to be in a language you understand. Set the **MT**
+box (bottom bar, next to Voice) to a language, for example English or
+Hindi, and every subtitle line (a file, a track inside the movie, or OCR
+of hardsubs) is translated into it before it is shown on the video and
+spoken by Read Aloud.
+
+The translation runs on your own PC: Tencent's Hy-MT2 model served by the
+llama.cpp engine, with 33 languages and no internet connection or API
+key. First use downloads it once from Tools → Live translation model
+(Hy-MT2): about 300 MB for the engine, then either ~1.1 GB for the small
+Hy-MT2-1.8B model that runs on any PC, or ~4.5 GB for the better
+Hy-MT2-7B model (needs an NVIDIA GPU). After that it starts in seconds
+and keeps working offline.
+
+While one line is spoken the next is already being translated, so on
+normal subtitle pacing you don't wait for it. Rewatched scenes come back
+instantly because translations are cached. Set MT back to Off to stop
+the model and free its memory; seeking, pausing and stopping never make
+the voice read stale translated lines.
+
+The model and engine are open source (Apache-2.0). Translation quality
+is good but it is still machine translation, so expect the odd mistake.
+
+---
+
 ## Controls
 
 | Button | What it does |
@@ -179,6 +243,7 @@ Notes:
 | Subtitles inside this movie | pick a subtitle track stored inside the MKV/MP4 file |
 | 🔊 Read Aloud | speak every subtitle line (S) |
 | Voice | Windows voices + **Piper: …** neural voices you downloaded (File → Get Piper voices) |
+| MT | translate subtitle lines to this language with the local AI model (Tools → Live translation model) |
 
 | Key | Action |
 |---|---|
@@ -226,4 +291,3 @@ which does not accept drops there.
 
 Check everything is OK: open a terminal in this folder and run
 `py -3 vlcspeaker.py --selftest`
-"# VLCspeaker" 

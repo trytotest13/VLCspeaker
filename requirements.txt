@@ -1,0 +1,15 @@
+python-vlc>=3.0.18
+comtypes>=1.2
+tkinterdnd2>=0.4.2
+pytesseract>=0.3.10
+pillow>=10.0
+winrt-runtime==2.3.0
+winrt-Windows.Foundation==2.3.0
+winrt-Windows.Globalization==2.3.0
+winrt-Windows.Graphics.Imaging==2.3.0
+winrt-Windows.Media.Ocr==2.3.0
+winrt-Windows.Storage.Streams==2.3.0
+# Optional: Piper neural voices for Read Aloud (kept last so a
+# failed install can never block the core packages above)
+piper-tts>=1.3.0
+PyAudio>=0.2.14

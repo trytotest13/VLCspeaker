@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="APPLICATIONFOLDER">
+            <Directory Id="dirC31195E1F6A9FECA5F00ECF72F774941" Name="voices">
+                <Component Id="cmp0F2A52DB14F8EAE530D948CE657ADFC5" Guid="{987A47E3-C6A2-4411-98FA-766E1E6EEF25}">
+                    <File Id="fil13F825EE34079D5C4CC0B43947178CFD" KeyPath="yes" Source="$(var.PiperSource)\voices\en_US-lessac-medium.onnx" />
+                </Component>
+                <Component Id="cmp017285DCDA48085C23FA6A1E8228B9F9" Guid="{FA4DF7C6-709A-4AFC-9FD9-0ED9CBD82621}">
+                    <File Id="fil0A648AD0F35D69FF02F8761CA85949F2" KeyPath="yes" Source="$(var.PiperSource)\voices\en_US-lessac-medium.onnx.json" />
+                </Component>
+            </Directory>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="PiperFilesGroup">
+            <ComponentRef Id="cmp0F2A52DB14F8EAE530D948CE657ADFC5" />
+            <ComponentRef Id="cmp017285DCDA48085C23FA6A1E8228B9F9" />
+        </ComponentGroup>
+    </Fragment>
+</Wix>
