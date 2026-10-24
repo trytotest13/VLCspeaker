@@ -1,9 +1,21 @@
 # VLCspeaker 2.0 (standalone Windows app)
 
+![Windows](https://img.shields.io/badge/platform-Windows-blue) ![VLC](https://img.shields.io/badge/playback-VLC%20libvlc-orange) ![TTS](https://img.shields.io/badge/neural%20voice-Piper-red) ![OCR](https://img.shields.io/badge/hardsubs-OCR-brightgreen)
+
 **VLCspeaker ships as a standalone .exe** (built with PyInstaller): one app
 folder, no Python, no pip installs. The installer carries everything: the
 app, the Piper neural voice engine, and an English voice model (fully
 offline after install).
+
+## What it looks like
+
+The start screen with the Open Video button, and playback with Read Aloud
+switched on (the orange toggle in the bottom bar). The interface is the
+same in the standalone .exe and the Python edition:
+
+![Start screen](docs/screenshots/01-start-screen.png)
+
+![Playing with Read Aloud on](docs/screenshots/02-playing-read-aloud.png)
 
 ## Install (real installer)
 
